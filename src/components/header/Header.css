@@ -1,0 +1,16 @@
+.header {
+    padding-left: 96px;
+    background-color: white;
+    height: 48px;
+    display: flex;
+    position: fixed;
+    z-index: 10;
+    align-items: center;
+    width: 100%;
+    -webkit-app-region: drag;
+    box-shadow: none;
+}
+
+.header-spacer {
+    height: 48px;
+}
