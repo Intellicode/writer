@@ -1,4 +1,10 @@
 .editor {
     border: 0;
     box-shadow: none !important;
+    height: calc(100vh - 48px);
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
 }

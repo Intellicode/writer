@@ -1,14 +1,20 @@
 .header {
-    padding-left: 96px;
+    padding: 0;
     background-color: white;
+    min-height: 48px !important;
     height: 48px;
     display: flex;
     position: fixed;
     z-index: 10;
-    align-items: center;
+    padding-left: 240px;
     width: 100%;
+    -webkit-user-select: none;
     -webkit-app-region: drag;
     box-shadow: none;
+}
+
+.header button {
+    -webkit-app-region: no-drag;
 }
 
 .header-spacer {

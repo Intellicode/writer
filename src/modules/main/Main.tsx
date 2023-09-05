@@ -1,16 +1,13 @@
-import {
-  Box,
-  Divider,
-  Drawer,
-  Typography,
-  styled,
-  useTheme,
-} from "@mui/material";
+import { Alert, Box, Drawer, Snackbar, styled, useTheme } from "@mui/material";
 import { Header } from "../../components/header/Header";
-import { useEffect, useState } from "react";
-import MDEditor from "@uiw/react-md-editor";
-import "./Main.css";
+import { KeyboardEvent, useEffect, useState } from "react";
+import * as monaco from "monaco-editor";
+import Editor, { loader } from "@monaco-editor/react";
+
 import { FileExplorer } from "../../components/file-explorer/FileExplorer";
+import "./Main.css";
+
+loader.config({ monaco });
 const drawerWidth = 240;
 
 const MainContainer = styled("main", {
@@ -19,7 +16,6 @@ const MainContainer = styled("main", {
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -44,10 +40,19 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   height: "48px",
 }));
 
+function setEditorTheme(monaco: any) {
+  monaco.editor.defineTheme("onedark", {
+    base: "vs",
+    inherit: true,
+    rules: [],
+    colors: {},
+  });
+}
+
 export function Main() {
   const [value, setValue] = useState("");
   const [filePath, setFilePath] = useState("");
-  const theme = useTheme();
+  const [originalValue, setOriginalValue] = useState("");
 
   useEffect(() => {
     const doAction = async () => {
@@ -81,19 +86,57 @@ export function Main() {
     //  doAction();
   }, []);
 
-  const handleSelect = async (path) => {
+  const handleSelect = async (path: string) => {
     const text = await window.electronAPI.openFile(path);
     setFilePath(path);
     setValue(text);
+    setOriginalValue(text);
   };
 
   const handleSave = () => {
     window.electronAPI.saveFile(filePath, value);
+    setShowSaved(true);
+    setOriginalValue(value);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "s" && e.metaKey) {
+      handleSave();
+    }
+  };
+  const [showSaved, setShowSaved] = useState(false);
+  const handleSaveNotificationClose = () => {
+    setShowSaved(false);
+  };
+
+  const handleTextSelect = (e) => {
+    console.log(e);
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Header />
+    <Box className="container">
+      <Header
+        onSave={handleSave}
+        title={filePath}
+        unsaved={originalValue !== value}
+      />
+      <Snackbar
+        open={showSaved}
+        autoHideDuration={6000}
+        onClose={handleSaveNotificationClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Alert
+          onClose={handleSaveNotificationClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Saved!
+        </Alert>
+      </Snackbar>
       <Drawer
         sx={{
           width: drawerWidth,
@@ -108,19 +151,25 @@ export function Main() {
         open={true}
       >
         <DrawerHeader />
-        <button onClick={handleSave}>Save</button>
         <FileExplorer onSelect={handleSelect} />
       </Drawer>
-      <MainContainer open={true}>
+      <MainContainer open={true} onKeyDown={handleKeyDown}>
         <DrawerHeader />
-        <MDEditor
-          className="editor"
-          hideToolbar={true}
-          value={value}
-          preview="edit"
-          onChange={setValue}
-          height="100%"
-        />
+        <Box className="editor">
+          <Editor
+            defaultLanguage="markdown"
+            defaultValue="// some comment"
+            value={value}
+            onChange={setValue}
+            theme="onedark"
+            options={{
+              automaticLayout: true,
+              fontFamily: "Arial",
+              fontSize: 16,
+            }}
+            beforeMount={setEditorTheme}
+          />
+        </Box>
       </MainContainer>
     </Box>
   );
