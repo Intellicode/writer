@@ -1,4 +1,18 @@
-import { Alert, Box, Drawer, Snackbar, styled, useTheme } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Drawer,
+  Snackbar,
+  TextField,
+  styled,
+  useTheme,
+} from "@mui/material";
 import { Header } from "../../components/header/Header";
 import { KeyboardEvent, useEffect, useState } from "react";
 import * as monaco from "monaco-editor";
@@ -53,38 +67,37 @@ export function Main() {
   const [value, setValue] = useState("");
   const [filePath, setFilePath] = useState("");
   const [originalValue, setOriginalValue] = useState("");
-
-  useEffect(() => {
-    const doAction = async () => {
-      const result = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
-        body: JSON.stringify({
-          model: "llama2",
-          prompt:
-            "Write a blog post in English about something interesting from wikipedia, use markdown for formatting",
-        }),
-      });
-      const td = new TextDecoder("utf-8");
-      const reader = result.body.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        try {
-          const json = JSON.parse(td.decode(value));
-          if (json["response"] !== undefined)
-            setValue((v) => v + json["response"]);
-        } catch (e) {
-          // nothing
+  const doAction = async () => {
+    const result = await fetch("http://localhost:11434/api/generate", {
+      method: "POST",
+      body: JSON.stringify({
+        model: "llama2",
+        prompt,
+      }),
+    });
+    const td = new TextDecoder("utf-8");
+    const reader = result.body.getReader();
+    console.log("got result");
+    while (true) {
+      const { done, value } = await reader.read();
+      try {
+        const json = JSON.parse(td.decode(value));
+        if (json["response"] !== undefined) {
+          insertText(json["response"]);
+          console.log("inserting");
         }
-
-        if (done) {
-          // Do something with last chunk of data then exit reader
-          return;
-        }
-        // Otherwise do something here to process current chunk
+      } catch (e) {
+        // nothing
+        console.log("error");
       }
-    };
-    //  doAction();
-  }, []);
+
+      if (done) {
+        // Do something with last chunk of data then exit reader
+        return;
+      }
+      // Otherwise do something here to process current chunk
+    }
+  };
 
   const handleSelect = async (path: string) => {
     const text = await window.electronAPI.openFile(path);
@@ -109,8 +122,44 @@ export function Main() {
     setShowSaved(false);
   };
 
-  const handleTextSelect = (e) => {
-    console.log(e);
+  const [monacoInstance, setMonacoInstance] =
+    useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+
+  const handleOnMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
+    setMonacoInstance(editor);
+  };
+
+  const insertText = (text: string) => {
+    if (monacoInstance) {
+      const selection = monacoInstance.getSelection();
+      const id = { major: 1, minor: 1 };
+      const op = {
+        identifier: id,
+        range: {
+          startLineNumber: selection?.selectionStartLineNumber || 1,
+          startColumn: selection?.selectionStartColumn || 1,
+          endLineNumber: selection?.endLineNumber || 1,
+          endColumn: selection?.endColumn || 1,
+        },
+        text,
+        forceMoveMarkers: true,
+      };
+      monacoInstance.executeEdits("my-source", [op]);
+    }
+  };
+
+  const handleInsertText = () => {
+    setDialogOpen(true);
+  };
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [prompt, setPrompt] = useState("");
+  const handleDialogClose = () => setDialogOpen(false);
+
+  const handlePrompt = () => {
+    setDialogOpen(false);
+    doAction();
+    setPrompt("");
   };
 
   return (
@@ -119,7 +168,29 @@ export function Main() {
         onSave={handleSave}
         title={filePath}
         unsaved={originalValue !== value}
+        onInsertText={handleInsertText}
       />
+      <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Generate text</DialogTitle>
+        <DialogContent>
+          <DialogContentText>What should the AI do for you?</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="prompt"
+            label="Prompt"
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handlePrompt}>Generate</Button>
+        </DialogActions>
+      </Dialog>
       <Snackbar
         open={showSaved}
         autoHideDuration={6000}
@@ -164,10 +235,12 @@ export function Main() {
             theme="onedark"
             options={{
               automaticLayout: true,
-              fontFamily: "Arial",
+              fontFamily: "Monaco",
               fontSize: 16,
+              wordWrap: "on",
             }}
             beforeMount={setEditorTheme}
+            onMount={handleOnMount}
           />
         </Box>
       </MainContainer>

@@ -1,7 +1,7 @@
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { styled, useTheme } from "@mui/material/styles";
 import { Toolbar, IconButton, Typography, Box } from "@mui/material";
-import { Circle, File, FloppyDisk, Stack } from "@phosphor-icons/react";
+import { Circle, File, FloppyDisk, Stack, TextAa } from "@phosphor-icons/react";
 import "./Header.css";
 
 interface AppBarProps extends MuiAppBarProps {
@@ -26,18 +26,16 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-export function Header({ onSave, title, unsaved }) {
+export function Header({ onSave, title, unsaved, onInsertText }) {
   return (
     <>
       <AppBar position="fixed" open={true} className="header">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={onSave}
-            edge="start"
-          >
+          <IconButton color="inherit" onClick={onSave} edge="start">
             <FloppyDisk size={16} />
+          </IconButton>
+          <IconButton color="inherit" onClick={onInsertText} edge="start">
+            <TextAa size={16} />
           </IconButton>
 
           <Typography variant="body2" color="black">
