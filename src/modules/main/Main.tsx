@@ -11,17 +11,14 @@ import {
   Snackbar,
   TextField,
   styled,
-  useTheme,
 } from "@mui/material";
-import { Header } from "../../components/header/Header";
-import { KeyboardEvent, useEffect, useState } from "react";
-import * as monaco from "monaco-editor";
-import Editor, { loader } from "@monaco-editor/react";
+import { Header } from "../../components/Header/Header";
+import { KeyboardEvent, useState } from "react";
 
-import { FileExplorer } from "../../components/file-explorer/FileExplorer";
+import { FileExplorer } from "../../components/FileExplorer/FileExplorer";
 import "./Main.css";
+import PromptDialog from "../../components/PromptDialog/PromptDialog";
 
-loader.config({ monaco });
 const drawerWidth = 240;
 
 const MainContainer = styled("main", {
@@ -54,20 +51,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   height: "48px",
 }));
 
-function setEditorTheme(monaco: any) {
-  monaco.editor.defineTheme("onedark", {
-    base: "vs",
-    inherit: true,
-    rules: [],
-    colors: {},
-  });
-}
-
 export function Main() {
   const [value, setValue] = useState("");
   const [filePath, setFilePath] = useState("");
   const [originalValue, setOriginalValue] = useState("");
-  const doAction = async () => {
+  const doAction = async (prompt: string) => {
     const result = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       body: JSON.stringify({
@@ -122,13 +110,6 @@ export function Main() {
     setShowSaved(false);
   };
 
-  const [monacoInstance, setMonacoInstance] =
-    useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-
-  const handleOnMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    setMonacoInstance(editor);
-  };
-
   const insertText = (text: string) => {
     if (monacoInstance) {
       const selection = monacoInstance.getSelection();
@@ -153,13 +134,12 @@ export function Main() {
   };
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [prompt, setPrompt] = useState("");
+
   const handleDialogClose = () => setDialogOpen(false);
 
-  const handlePrompt = () => {
+  const handlePrompt = (prompt: string) => {
     setDialogOpen(false);
-    doAction();
-    setPrompt("");
+    doAction(prompt);
   };
 
   return (
@@ -170,27 +150,11 @@ export function Main() {
         unsaved={originalValue !== value}
         onInsertText={handleInsertText}
       />
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Generate text</DialogTitle>
-        <DialogContent>
-          <DialogContentText>What should the AI do for you?</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="prompt"
-            label="Prompt"
-            type="text"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handlePrompt}>Generate</Button>
-        </DialogActions>
-      </Dialog>
+      <PromptDialog
+        onClose={handleDialogClose}
+        open={dialogOpen}
+        onSubmit={handlePrompt}
+      />
       <Snackbar
         open={showSaved}
         autoHideDuration={6000}
@@ -226,23 +190,6 @@ export function Main() {
       </Drawer>
       <MainContainer open={true} onKeyDown={handleKeyDown}>
         <DrawerHeader />
-        <Box className="editor">
-          <Editor
-            defaultLanguage="markdown"
-            defaultValue="// some comment"
-            value={value}
-            onChange={setValue}
-            theme="onedark"
-            options={{
-              automaticLayout: true,
-              fontFamily: "Monaco",
-              fontSize: 16,
-              wordWrap: "on",
-            }}
-            beforeMount={setEditorTheme}
-            onMount={handleOnMount}
-          />
-        </Box>
       </MainContainer>
     </Box>
   );

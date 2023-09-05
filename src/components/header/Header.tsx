@@ -1,7 +1,7 @@
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, useTheme } from "@mui/material/styles";
-import { Toolbar, IconButton, Typography, Box } from "@mui/material";
-import { Circle, File, FloppyDisk, Stack, TextAa } from "@phosphor-icons/react";
+import { styled } from "@mui/material/styles";
+import { Toolbar, IconButton, Typography } from "@mui/material";
+import { Circle, FloppyDisk, TextAa } from "@phosphor-icons/react";
 import "./Header.css";
 
 interface AppBarProps extends MuiAppBarProps {
@@ -26,7 +26,14 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-export function Header({ onSave, title, unsaved, onInsertText }) {
+interface HeaderProps {
+  onSave: () => void;
+  onInsertText: () => void;
+  title: string;
+  unsaved: boolean;
+}
+
+export function Header({ onSave, title, unsaved, onInsertText }: HeaderProps) {
   return (
     <>
       <AppBar position="fixed" open={true} className="header">
@@ -44,12 +51,6 @@ export function Header({ onSave, title, unsaved, onInsertText }) {
           {unsaved && <Circle size={12} weight="fill" />}
         </Toolbar>
       </AppBar>
-      {/* <Box className="header">
-        <Stack direction="row">
-          <File />
-        </Stack>
-      </Box>
-      <Box className="header-spacer"></Box> */}
     </>
   );
 }

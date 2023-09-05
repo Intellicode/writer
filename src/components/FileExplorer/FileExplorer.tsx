@@ -2,7 +2,19 @@ import { TreeItem, TreeView } from "@mui/lab";
 import { CaretDown, CaretRight } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
-function Directory({ item, onSelect }) {
+interface FileTreeItem {
+  path: string;
+  name: string;
+  isDirectory: boolean;
+  entries: FileTreeItem[];
+}
+
+interface DirectoryProps {
+  item: FileTreeItem;
+  onSelect: (path: string) => void;
+}
+
+function Directory({ item, onSelect }: DirectoryProps) {
   return (
     <TreeItem
       nodeId={item.path}
@@ -28,8 +40,13 @@ function Directory({ item, onSelect }) {
   );
 }
 
-export function FileExplorer({ onSelect }) {
+interface FileExplorerProps {
+  onSelect: (path: string) => void;
+}
+
+export function FileExplorer({ onSelect }: FileExplorerProps) {
   const [files, setFiles] = useState([]);
+
   useEffect(() => {
     async function getFiles() {
       const files = await window.electronAPI.listFiles();
@@ -38,7 +55,6 @@ export function FileExplorer({ onSelect }) {
     getFiles();
   }, []);
 
-  console.log(files);
   return (
     <TreeView
       aria-label="file system navigator"
