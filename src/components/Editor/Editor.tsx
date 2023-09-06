@@ -1,7 +1,8 @@
 import { Box } from "@mui/material";
 import * as monaco from "monaco-editor";
 import MonacoEditor, { Monaco, loader } from "@monaco-editor/react";
-import { useState } from "react";
+import { useContext } from "react";
+import { EditorContext } from "./EditorContext";
 
 loader.config({ monaco });
 
@@ -20,11 +21,10 @@ interface EditorProps {
 }
 
 export default function Editor({ content, onChange }: EditorProps) {
-  const [monacoInstance, setMonacoInstance] =
-    useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const { setEditor } = useContext(EditorContext);
 
   const handleOnMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    setMonacoInstance(editor);
+    setEditor(editor);
   };
 
   return (
