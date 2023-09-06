@@ -29,5 +29,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Make app
-        run: npm run make
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run publish
