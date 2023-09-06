@@ -45,8 +45,15 @@ export function Header({
 }: HeaderProps) {
   return (
     <>
-      <AppBar position="fixed" open={open} className="header">
-        <Toolbar>
+      <AppBar
+        position="fixed"
+        open={open}
+        className="header"
+        style={{
+          paddingLeft: open ? "240px" : "60px",
+        }}
+      >
+        <Toolbar className="toolbar">
           <IconButton color="inherit" onClick={onSideBarToggle} edge="start">
             <Sidebar size={16} />
           </IconButton>

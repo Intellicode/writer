@@ -6,7 +6,6 @@
     display: flex;
     position: fixed;
     z-index: 10;
-    padding-left: 240px;
     width: 100%;
     -webkit-user-select: none;
     -webkit-app-region: drag;
@@ -19,4 +18,9 @@
 
 .header-spacer {
     height: 48px;
+}
+
+.toolbar {
+    height: 48px;
+    min-height: 48px;;
 }

@@ -119,7 +119,7 @@ export function Main() {
         <DrawerHeader />
         <FileExplorer onSelect={handleSelect} />
       </Drawer>
-      <MainContainer open={true} onKeyDown={handleKeyDown}>
+      <MainContainer open={sideBarOpen} onKeyDown={handleKeyDown}>
         <DrawerHeader />
         <Editor content={value} onChange={setValue} />
       </MainContainer>
