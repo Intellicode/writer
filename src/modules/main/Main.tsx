@@ -10,6 +10,8 @@ import SaveNotification from "../../components/Notifications/SaveNotification";
 import Editor from "../../components/Editor/Editor";
 import { useGenerateText } from "../../hooks/ai";
 import { EditorContext } from "../../components/Editor/EditorContext";
+import { useNewFileDialog } from "../../components/NewFileDialog/NewFileDialog.hooks";
+import NewFileDialog from "../../components/NewFileDialog/NewFileDialog";
 
 const drawerWidth = 240;
 
@@ -49,8 +51,9 @@ export function Main() {
   const [originalValue, setOriginalValue] = useState("");
   const [showSaved, setShowSaved] = useState(false);
   const { insertTextAtCursor } = useContext(EditorContext);
+  const [model, setModel] = useState<"ollama" | "gpt">("ollama");
 
-  const { generateText } = useGenerateText(insertTextAtCursor);
+  const { generateText } = useGenerateText(insertTextAtCursor, model);
 
   const handleSelect = async (path: string) => {
     const text = await window.electronAPI.openFile(path);
@@ -82,11 +85,13 @@ export function Main() {
     onSubmit,
   } = usePromptDialog(generateText);
 
-  const handleInsertText = () => {
-    openDialog();
-  };
-
   const [sideBarOpen, setSideBarOpen] = useState(true);
+  const {
+    open: newFileDialogOpen,
+    openDialog: newFileDialog,
+    onClose: onCloseNewFileDialog,
+    onSubmit: onCreateFile,
+  } = useNewFileDialog((text: string) => window.electronAPI.newFile(text));
 
   return (
     <Box className="container">
@@ -94,11 +99,17 @@ export function Main() {
         onSave={handleSave}
         title={filePath}
         unsaved={originalValue !== value}
-        onInsertText={handleInsertText}
+        onInsertText={openDialog}
         open={sideBarOpen}
         onSideBarToggle={() => setSideBarOpen((prev) => !prev)}
+        onNewFile={newFileDialog}
       />
       <PromptDialog onClose={onClose} open={dialogOpen} onSubmit={onSubmit} />
+      <NewFileDialog
+        onClose={onCloseNewFileDialog}
+        open={newFileDialogOpen}
+        onSubmit={onCreateFile}
+      />
       <SaveNotification
         open={showSaved}
         onClose={handleSaveNotificationClose}

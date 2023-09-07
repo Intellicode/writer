@@ -7,4 +7,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   openFile: (path: string) => ipcRenderer.invoke("files:open", path),
   saveFile: (path: string, content: string) =>
     ipcRenderer.invoke("files:save", path, content),
+  newFile: (path: string) => ipcRenderer.invoke("files:new", path),
+  getOpenAIApiKey: () => ipcRenderer.invoke("openai:getKey"),
 });

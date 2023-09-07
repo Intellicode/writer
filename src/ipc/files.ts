@@ -32,7 +32,7 @@ async function walk(dirPath: string): Promise<any> {
   );
 }
 
-const directoryPath = path.join(os.homedir(), "/Documents/notes");
+const directoryPath = path.join(os.homedir(), "/Notes");
 
 export function handleRequestFiles() {
   return walk(directoryPath);
@@ -52,6 +52,20 @@ export async function handleSaveFile(
   try {
     const result = await fs.writeFile(path, content, { encoding: "utf-8" });
     console.log("saved!");
+    return result;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function handleNewFile(
+  event: IpcMainInvokeEvent,
+  filePath: string
+) {
+  try {
+    const newFilePath = path.join(directoryPath, filePath);
+    const result = await fs.writeFile(newFilePath, "", { encoding: "utf-8" });
+    console.log("New file!", newFilePath);
     return result;
   } catch (e) {
     console.log(e);
