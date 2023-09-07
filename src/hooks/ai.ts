@@ -7,7 +7,7 @@ export function useGenerateText(
 ) {
   const generateText = useCallback(
     async (prompt: string) => {
-      if (model === "ollama") {
+      if (model === "llama2") {
         const result = await fetch("http://localhost:11434/api/generate", {
           method: "POST",
           body: JSON.stringify({
@@ -22,14 +22,14 @@ export function useGenerateText(
         while (true) {
           const { done, value } = await reader.read();
           try {
-            const json = JSON.parse(textDecoder.decode(value));
+            const json = value ? JSON.parse(textDecoder.decode(value)) : {};
             if (json["response"] !== undefined) {
               onText(json["response"]);
               console.log("inserting");
             }
           } catch (e) {
             // nothing
-            console.log(e);
+            console.log(e, textDecoder.decode(value));
           }
 
           if (done) {

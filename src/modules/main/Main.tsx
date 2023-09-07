@@ -51,7 +51,7 @@ export function Main() {
   const [originalValue, setOriginalValue] = useState("");
   const [showSaved, setShowSaved] = useState(false);
   const { insertTextAtCursor } = useContext(EditorContext);
-  const [model, setModel] = useState<"ollama" | "gpt">("ollama");
+  const [model, setModel] = useState<"llama2" | "gpt">("llama2");
 
   const { generateText } = useGenerateText(insertTextAtCursor, model);
 
