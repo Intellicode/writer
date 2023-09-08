@@ -17,12 +17,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on(
       "ollama:generatedText",
       (event: IpcRendererEvent, text: string) => {
-        console.log(text);
         text === "--end--" ? unSubscribe() : onText(text);
       }
     );
     const unSubscribe = () => {
-      console.log("removed event listeners");
       ipcRenderer.removeAllListeners("ollama:generatedText");
     };
   },
