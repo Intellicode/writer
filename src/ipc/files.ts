@@ -64,8 +64,8 @@ export async function handleNewFile(
 ) {
   try {
     const newFilePath = path.join(directoryPath, filePath);
+    await fs.mkdir(path.dirname(newFilePath), { recursive: true });
     const result = await fs.writeFile(newFilePath, "", { encoding: "utf-8" });
-    console.log("New file!", newFilePath);
     return result;
   } catch (e) {
     console.log(e);
