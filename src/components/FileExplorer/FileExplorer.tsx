@@ -52,7 +52,8 @@ export function FileExplorer({ onSelect }: FileExplorerProps) {
       const files = await window.electronAPI.listFiles();
       setFiles(files);
     }
-    getFiles();
+    const refresh = setInterval(getFiles, 3000);
+    return () => clearInterval(refresh);
   }, []);
 
   return (
