@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Intellicode/writer/compare/v1.0.0...v1.1.0) (2023-09-08)
+
+
+### Features
+
+* automatically create new dir on file creation ([2085486](https://github.com/Intellicode/writer/commit/2085486e598cb1eeda0211189a1536406e4a40f9))
+
 ## 1.0.0 (2023-09-08)
 
 
