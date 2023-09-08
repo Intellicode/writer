@@ -1,6 +1,6 @@
 name: Build
 
-on: push
+on: release
 
 jobs:
   release:
@@ -29,5 +29,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Package
-        run: npm run make
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: npm run publish
