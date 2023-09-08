@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/Intellicode/writer/compare/v1.1.0...v1.2.0) (2023-09-08)
+
+
+### Features
+
+* auto refresh file list ([6a3d5d6](https://github.com/Intellicode/writer/commit/6a3d5d60559ee75f450214ae37d8bea9dc6b9899))
+
+
+### Bug Fixes
+
+* add id to build step ([b6a755d](https://github.com/Intellicode/writer/commit/b6a755d8d1c461bd784c7c5fe00837f78e824da2))
+
 ## [1.1.0](https://github.com/Intellicode/writer/compare/v1.0.0...v1.1.0) (2023-09-08)
 
 
