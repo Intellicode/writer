@@ -70,7 +70,7 @@ app.whenReady().then(() => {
   ipcMain.on("openai:generateText", async (e, prompt) => {
     const parts = await handleGenerateOpenAIText(e, prompt);
     for await (const part of parts) {
-      ipcMain.postMessage("ollama:generatedText", part);
+      e.sender.send("ollama:generatedText", part);
     }
   });
   ipcMain.on("ollama:generateText", async (e, prompt) => {
