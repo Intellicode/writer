@@ -9,9 +9,10 @@ permissions:
 name: release-please
 jobs:
   release-please:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
+        id: release
         with:
           release-type: node
           package-name: release-please-action
