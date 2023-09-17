@@ -99,7 +99,7 @@ If you have any questions, suggestions, or issues, please feel free to contact u
 
 - Email: contact-tomh@mailx.nl
 
-- Website: [tomh.nl](www.tomh.nl/projects/writer)
+- Website: [Writer](https://www.tomh.nl/projects/writer)
 
 - GitHub Issues: [Project Issues](https://github.com/intellicode/writer/issues)
 
