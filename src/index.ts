@@ -1,5 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import {
+  handleListTemplates,
+  handleLoadTemplate,
   handleNewFile,
   handleOpenFile,
   handleRequestFiles,
@@ -67,6 +69,8 @@ app.whenReady().then(() => {
   ipcMain.handle("files:open", handleOpenFile);
   ipcMain.handle("files:save", handleSaveFile);
   ipcMain.handle("files:new", handleNewFile);
+  ipcMain.handle("templates:list", handleListTemplates);
+  ipcMain.handle("templates:load", handleLoadTemplate);
   ipcMain.on("openai:generateText", async (e, prompt) => {
     const parts = await handleGenerateOpenAIText(e, prompt);
     for await (const part of parts) {

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-export function useNewFileDialog(onSubmit: (text: string) => void) {
+export function useNewFileDialog() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleDialogOpen = useCallback(
@@ -12,13 +12,10 @@ export function useNewFileDialog(onSubmit: (text: string) => void) {
     () => setDialogOpen(false),
     [setDialogOpen]
   );
-  const handleSubmti = useCallback(
-    (text: string) => {
-      onSubmit(text);
-      setDialogOpen(false);
-    },
-    [onSubmit]
-  );
+  const handleSubmti = useCallback((text: string, template: string) => {
+    window.electronAPI.newFile(text, template);
+    setDialogOpen(false);
+  }, []);
 
   return {
     open: dialogOpen,

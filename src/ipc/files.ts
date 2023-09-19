@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import fsSync from "fs";
 import path from "path";
 import os from "os";
 import { readdir } from "node:fs/promises";
@@ -60,14 +59,29 @@ export async function handleSaveFile(
 
 export async function handleNewFile(
   event: IpcMainInvokeEvent,
-  filePath: string
+  filePath: string,
+  templatePath: string
 ) {
   try {
     const newFilePath = path.join(directoryPath, filePath);
     await fs.mkdir(path.dirname(newFilePath), { recursive: true });
-    const result = await fs.writeFile(newFilePath, "", { encoding: "utf-8" });
-    return result;
+    if (templatePath) {
+      return await fs.copyFile(templatePath, newFilePath);
+    } else {
+      return await fs.writeFile(newFilePath, "", { encoding: "utf-8" });
+    }
   } catch (e) {
     console.log(e);
   }
+}
+
+export async function handleListTemplates() {
+  return walk(path.join(__dirname, "../static/templates"));
+}
+
+export async function handleLoadTemplate(
+  event: IpcMainInvokeEvent,
+  path: string
+) {
+  return fs.open(path, "r+");
 }

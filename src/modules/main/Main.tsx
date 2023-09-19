@@ -91,7 +91,7 @@ export function Main() {
     openDialog: newFileDialog,
     onClose: onCloseNewFileDialog,
     onSubmit: onCreateFile,
-  } = useNewFileDialog((text: string) => window.electronAPI.newFile(text));
+  } = useNewFileDialog();
 
   return (
     <Box className="container">
