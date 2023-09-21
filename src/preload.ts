@@ -7,7 +7,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   openFile: (path: string) => ipcRenderer.invoke("files:open", path),
   saveFile: (path: string, content: string) =>
     ipcRenderer.invoke("files:save", path, content),
-  newFile: (path: string) => ipcRenderer.invoke("files:new", path),
+  newFile: (path: string, templatePath: string) =>
+    ipcRenderer.invoke("files:new", path, templatePath),
   generateOllamaText: function generateOllamaText(
     text: string,
     onText: (text: string) => void
@@ -25,4 +26,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     };
   },
   generateOpenAIText: () => ipcRenderer.invoke("openai:generateText"),
+  listTemplates: () => ipcRenderer.invoke("templates:list"),
+  loadTemplate: (path: string) => ipcRenderer.invoke("templates:load", path),
 });
