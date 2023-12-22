@@ -35,7 +35,7 @@ To install the Markdown Editor with LLM Integration, follow these steps:
 2. Navigate to the project directory:
 
    ```bash
-   cd markdown-editor
+   cd writer
    ```
 
 3. Install the required dependencies:
