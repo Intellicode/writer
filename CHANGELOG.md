@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/Intellicode/writer/compare/v1.2.0...v1.3.0) (2024-08-19)
+
+
+### Features
+
+* add document templates ([49ce430](https://github.com/Intellicode/writer/commit/49ce430393ff7ec8dfb5acf199e22ee9de232daa))
+* add template functionality ([#8](https://github.com/Intellicode/writer/issues/8)) ([1dc23d6](https://github.com/Intellicode/writer/commit/1dc23d697255275519c857ed88e32fc0adeab0cc))
+
+
+### Bug Fixes
+
+* typo in url ([793f2cd](https://github.com/Intellicode/writer/commit/793f2cd776eb55ab788aa4029059cbb73a4d6905))
+
 ## [1.2.0](https://github.com/Intellicode/writer/compare/v1.1.0...v1.2.0) (2023-09-08)
 
 
